@@ -20,6 +20,7 @@ public class Client {
 	private static int MsgSize = 5;
 	private static void simple() {
 		try {
+			DatagramSocket ds = new DatagramSocket();
 			System.out.println(new GregorianCalendar().getTimeInMillis());
 			do {
 				String message = "" + NbStep;
@@ -27,11 +28,10 @@ public class Client {
 				InetAddress addr;
 				addr = InetAddress.getByName("localhost");
 				DatagramPacket packet = new DatagramPacket (data, data.length, addr, ServerPort);
-				DatagramSocket ds = new DatagramSocket();
 				ds.send(packet);
-				ds.close();
 				NbStep++;
 			} while (NbStep <= 5000);
+			ds.close();
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		} catch (SocketException e) {
