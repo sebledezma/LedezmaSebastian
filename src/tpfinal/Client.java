@@ -22,11 +22,11 @@ public class Client {
 		try {
 			DatagramSocket ds = new DatagramSocket();
 			System.out.println(new GregorianCalendar().getTimeInMillis());
+			InetAddress addr;
+			addr = InetAddress.getByName("localhost");
 			do {
 				String message = "" + NbStep;
 				byte[] data = message.getBytes();
-				InetAddress addr;
-				addr = InetAddress.getByName("localhost");
 				DatagramPacket packet = new DatagramPacket (data, data.length, addr, ServerPort);
 				ds.send(packet);
 				NbStep++;
