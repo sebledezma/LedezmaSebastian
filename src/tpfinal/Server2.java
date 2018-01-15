@@ -3,11 +3,11 @@ package tpfinal;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
+import java.util.GregorianCalendar;
 
 public class Server2 {
 	private static int ServerPort = 332; // Server identification
 	private static int ClientPort = 331; // Client identification
-	private static int MsgSize = 5;
 	private static int NbStep = 1;
 	private static void simple() {
 		try {
@@ -17,7 +17,7 @@ public class Server2 {
 				DatagramPacket packet = new DatagramPacket(new byte[1024], 1024);
 				ds.receive(packet);
 				int nombre = Integer.parseInt(new String (packet.getData(), 0, packet.getLength()));
-				System.out.println(factorielleIterative(nombre));
+				System.out.println(NbStep + " " + (new GregorianCalendar().getTime()) + " " + (new GregorianCalendar().getTimeInMillis()) + " " + factorielleIterative(nombre));
 				NbStep++;
 				if (NbStep > 5000) {
 					fini = true;

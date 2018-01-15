@@ -1,29 +1,31 @@
 package tpfinal;
 
 import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
+import java.io.ObjectInputStream;
+import java.net.ServerSocket;
+import java.net.Socket;
 
 public class ServerStat {
 	private static int ServerPort = 334; // Server identification
 	private static int ClientPort = 331; // Client identification
 	private static int MsgSize = 5;
 	private static int NbStep = 1;
+	
+	private static int TimeStartClient = 0;
+	private static int TimeServerStart = 0;
+	//private static int 
+	
 	private static void simple() {
 		try {
-			DatagramSocket ds = new DatagramSocket(ServerPort);
+			ServerSocket serveur= new ServerSocket(ServerPort);
 			boolean fini=false;
+			Socket socket = serveur.accept();
 			while (!fini) {
-				DatagramPacket packet = new DatagramPacket(new byte[1024], 1024);
-				ds.receive(packet);
-				System.out.println("Message: " + new String (packet.getData(), 0, packet.getLength()));
-				NbStep++;
-				if (NbStep > 5000) {
-					fini = true;
-				}
+				ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
+				Object obj = ois.readObject();
 			}
-			ds.close();
-		} catch (IOException e) {
+			socket.close();
+		}catch (Exception e){
 			e.printStackTrace();
 		}
 	}
