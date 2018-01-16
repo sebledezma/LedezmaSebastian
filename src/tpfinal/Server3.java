@@ -1,8 +1,9 @@
 package tpfinal;
 
-import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.util.GregorianCalendar;
 
 public class Server3 {
@@ -11,20 +12,34 @@ public class Server3 {
 	private static int NbStep = 1;
 	private static void simple() {
 		try {
-			DatagramSocket ds = new DatagramSocket(ServerPort);
+			ServerSocket serveur = new ServerSocket(ServerPort);
 			boolean fini=false;
+			
 			while (!fini) {
-				DatagramPacket packet = new DatagramPacket(new byte[1024], 1024);
-				ds.receive(packet);
-				int nombre = Integer.parseInt(new String (packet.getData(), 0, packet.getLength()));
-				System.out.println(NbStep + " " + (new GregorianCalendar().getTime()) + " " + (new GregorianCalendar().getTimeInMillis()) + " " + factorielleRecursive(nombre));
+				
+				Socket socket = serveur.accept();
+				ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
+				Object receivedObj = ois.readObject();
+				long[] inputData = (long[]) receivedObj;
+				int nombre = (int) inputData[1];
+				long timeReceived = inputData[0];
+				long te = (long) (new GregorianCalendar().getTimeInMillis());
+				System.out.println(NbStep + " " + te + " factorielle de " + nombre + " = " + factorielleRecursive(nombre));
+				long outputData[] = {timeReceived, te};
+				ObjectOutputStream oos = new ObjectOutputStream( socket.getOutputStream());
+				oos.writeObject(outputData);
+				socket.close();
 				NbStep++;
+				
 				if (NbStep > 5000) {
 					fini = true;
 				}
+				
 			}
-			ds.close();
-		} catch (IOException e) {
+			
+			serveur.close();
+			
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
